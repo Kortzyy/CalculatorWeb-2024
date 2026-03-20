@@ -1,0 +1,31 @@
+/* =============================================
+   base.css — CSS Variables, Reset, Shared Styles
+   ============================================= */
+
+:root {
+    --bg:          #0c0c0c;
+    --calc-bg:     #111;
+    --btn:         #383737;
+    --btn-hover:   #2a2a2a;
+    --accent:      rgb(0, 226, 132);
+    --text:        #ffffff;
+    --muted:       #8a8a8a;
+    --history-bg:  #141414;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}

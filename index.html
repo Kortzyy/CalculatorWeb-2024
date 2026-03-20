@@ -1,504 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Standar Calculator</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator — Standard</title>
 
-<style>
-/* Theme Variables */
-:root {
-    --bg: #0c0c0c;
-    --calc-bg: #111;
-    --btn: #383737;
-    --btn-hover: #2a2a2a;
-    --accent: rgb(0, 226, 132);
-    --text: #ffffff;
-    --muted: #8a8a8a;
-    --history-bg: #141414;
-}
-
-/* Base Reset */
-* {
-    box-sizing: border-box;
-    font-family: "Segoe UI", system-ui, sans-serif;
-}
-
-body {
-    margin: 0;
-    height: 100vh;
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-/* Layout Wrapper */
-.wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-/* Burger Button */
-.burger {
-    position: absolute;
-    top: 23px;
-    left: 22px;
-    cursor: pointer;
-    z-index: 5;
-}
-
-.burger div {
-    width: 24px;
-    height: 3px;
-    background: var(--text);
-    margin: 4px 0;
-}
-
-/* Side Navigation */
-.side-menu {
-    position: absolute;
-    right: 100%;
-    top: 0;
-    width: 300px;
-    height: 458px;
-    padding: 20px;
-    margin-right: 15px;
-    background: #111;
-    border-radius: 16px;
-    box-shadow: 0 25px 60px rgba(0,0,0,.6);
-    opacity: 0;
-    transform: translateX(20px);
-    pointer-events: none;
-    transition: all 0.3s ease;
-}
-
-.side-menu.active {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-}
-
-/* Grid  */
-.menu-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-}
-
-/* Each box */
-.menu-item {
-    align-items: center;
-    background: #1a1a1a;
-    border-radius: 12px;
-    box-sizing: border-box;
-    cursor: pointer;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 17px 10px;
-    text-align: center;
-    text-decoration: none;
-    transition: 0.2s;
-    width: 122px;
-}
-
-
-.menu-item:hover {
-    background: #222;
-}
-
-/* Placeholder icon */
-.menu-item .icon {
-    font-size: 24px;
-    margin-bottom: 8px;
-    color: var(--text);
-}
-
-.menu-item span {
-    color: white;
-    font-size: 0.9rem;
-}
-
-
-.side-menu a:hover {
-    color: var(--accent);
-}
-
-/* Calculator Container */
-.calculator {
-    width: 340px;
-    padding: 20px;
-    background: var(--calc-bg);
-    border-radius: 16px;
-    box-shadow: 0 25px 60px rgba(0,0,0,.6);
-}
-
-/* Display Area */
-.display {
-    margin-bottom: 20px;
-}
-
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.history-toggle {
-    font-size: 1.17rem;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.history-toggle:hover {
-    color: var(--accent);
-}
-
-.operation {
-    height: 24px;
-    text-align: right;
-    color: var(--muted);
-    font-size: 0.9rem;
-}
-
-.result {
-    text-align: right;
-    font-size: 2.2rem;
-    color: var(--text);
-}
-
-/* Buttons */
-.buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
-
-button {
-    height: 52px;
-    border-radius: 12px;
-    border: none;
-    background: var(--btn);
-    color: var(--text);
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-
-button:hover {
-    background: var(--btn-hover);
-}
-
-.operator {
-    color: var(--accent);
-    font-weight: bold;
-}
-
-.equal {
-    font-weight: bold;
-    background: var(--accent);
-    color: #000;
-}
-
-.clear {
-    color: red;
-    font-weight: bold;
-}
-
-/* History Panel */
-.history-panel {
-    position: absolute;
-    left: 100%;
-    top: 0;
-    width: 300px;
-    height: 458px;
-    padding: 20px;
-    margin-left: 15px;
-    background: var(--history-bg);
-    border-radius: 16px;
-    box-shadow: 0 25px 60px rgba(0,0,0,.6);
-    display: flex;
-    flex-direction: column;
-    opacity: 0;
-    transform: translateX(20px);
-    pointer-events: none;
-    transition: all 0.3s ease;
-}
-
-.history-panel h3 {
-    margin: 0 0 10px;
-    color: white;
-    font-size: 1rem;
-}
-
-.history-panel.active {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-}
-
-.history-panel ul {
-    color: white;
-    flex: 1;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    overflow-y: auto;
-}
-
-.history-panel li {
-    padding: 8px;
-    border-bottom: 1px solid #222;
-}
-
-/* Clear History Button */
-#clearHistoryBtn {
-    width: 100%;
-    height: 42px;
-    border-radius: 10px;
-    border: none;
-    background: #2a2a2a;
-    color: red;
-    font-size: 0.95rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-#clearHistoryBtn:hover {
-    background: #3a3a3a;
-}
-</style>
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/calculator.css">
 </head>
 
 <body>
 
 <div class="wrapper">
 
-    <!-- Side Menu -->
-    <div class="side-menu" id="menu">
-    <div class="menu-grid">
-        <a href="index.html" class="menu-item">
-            <div class="icon">⌨</div>
-            <span>Standard</span>
-        </a>
+    <!-- ── Side Navigation Menu ── -->
+    <nav class="side-menu" id="menu" aria-label="Calculator modes">
+        <div class="menu-grid">
+            <a href="index.html"              class="menu-item"><div class="icon">⌨</div><span>Standard</span></a>
+            <a href="pages/scientific.html"  class="menu-item"><div class="icon">∑</div><span>Scientific</span></a>
+            <a href="pages/programmer.html"  class="menu-item"><div class="icon">&lt;/&gt;</div><span>Programmer</span></a>
+            <a href="pages/currency.html"    class="menu-item"><div class="icon">Ⓒ</div><span>Currency</span></a>
+            <a href="pages/temperature.html" class="menu-item"><div class="icon">℃</div><span>Temperature</span></a>
+            <a href="pages/bmi.html"         class="menu-item"><div class="icon">⚖</div><span>BMI</span></a>
+            <a href="pages/speed.html"       class="menu-item"><div class="icon">➤</div><span>Speed</span></a>
+            <a href="pages/time.html"        class="menu-item"><div class="icon">⏱</div><span>Time</span></a>
+        </div>
+    </nav>
 
-        <a href="scientific.html" class="menu-item">
-            <div class="icon">∑</div>
-            <span>Scientific</span>
-        </a>
-        
+    <!-- ── Calculator ── -->
+    <main class="calculator" aria-label="Standard calculator">
 
-        <a href="programmer.html" class="menu-item">
-            <div class="icon">< / ></div>
-            <span>Programmer</span>
-        </a>
-
-        <a href="currency.html" class="menu-item">
-            <div class="icon">Ⓒ</div>
-            <span>Currency</span>
-        </a>
-
-        <a href="temperature.html" class="menu-item">
-            <div class="icon">℃</div>
-            <span>Temperature</span>
-        </a>
-
-        <a href="bmi.html" class="menu-item">
-            <div class="icon">⚖</div>
-            <span>BMI</span>
-        </a>
-
-        <a href="speed.html" class="menu-item">
-            <div class="icon">➤</div>
-            <span>Speed</span>
-        </a>
-
-        <a href="time.html" class="menu-item">
-            <div class="icon">⏱</div>
-            <span>Time</span>
-        </a>
-
-    </div>
-</div>
-
-
-    <!-- Calculator -->
-    <div class="calculator">
-
+        <!-- Burger Menu Button -->
         <div class="burger" onclick="toggleMenu()">
-            <div></div><div></div><div></div>
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
 
+        <!-- Display -->
         <div class="display">
             <div class="top-bar">
-                <div></div>
+                <div><!-- burger placeholder --></div>
                 <div class="history-toggle" onclick="toggleHistory()">History</div>
             </div>
-            <div class="operation" id="operation"></div>
-            <div class="result" id="result">0</div>
+            <div class="operation" id="operation" aria-live="polite"></div>
+            <div class="result"    id="result"    aria-live="polite">0</div>
         </div>
 
-        <div class="buttons">
-            <button class="clear" data-action="clear">C</button>
-            <button class="operator" data-op="%">%</button>
-            <button data-action="delete">⌫</button>
-            <button class="operator" data-op="/">/</button>
+        <!-- Button Pad -->
+        <div class="buttons" role="group" aria-label="Calculator buttons">
+            <button class="clear"    data-action="clear"  aria-label="Clear">C</button>
+            <button class="operator" data-op="%"          aria-label="Percent">%</button>
+            <button                  data-action="delete" aria-label="Delete">⌫</button>
+            <button class="operator" data-op="/"          aria-label="Divide">/</button>
 
             <button data-num="7">7</button>
             <button data-num="8">8</button>
             <button data-num="9">9</button>
-            <button class="operator" data-op="*">×</button>
+            <button class="operator" data-op="*" aria-label="Multiply">×</button>
 
             <button data-num="4">4</button>
             <button data-num="5">5</button>
             <button data-num="6">6</button>
-            <button class="operator" data-op="-">−</button>
+            <button class="operator" data-op="-" aria-label="Subtract">−</button>
 
             <button data-num="1">1</button>
             <button data-num="2">2</button>
             <button data-num="3">3</button>
-            <button class="operator" data-op="+">+</button>
+            <button class="operator" data-op="+" aria-label="Add">+</button>
 
-            <button data-num="0" style="grid-column: span 2;">0</button>
+            <button data-num="0"  style="grid-column: span 2;">0</button>
             <button data-num=".">.</button>
-            <button class="equal" data-action="equal">=</button>
+            <button class="equal" data-action="equal" aria-label="Equals">=</button>
         </div>
-    </div>
 
-    <!-- History Panel -->
-    <div class="history-panel" id="historyPanel">
+    </main>
+
+    <!-- ── History Panel ── -->
+    <aside class="history-panel" id="historyPanel" aria-label="Calculation history">
         <h3>History</h3>
-        <ul id="historyList"></ul>
+        <ul id="historyList" aria-live="polite"></ul>
         <button id="clearHistoryBtn">Clear History</button>
-    </div>
+    </aside>
 
 </div>
 
-<script>
-/* DOM References */
-const operationEl = document.getElementById("operation");
-const resultEl = document.getElementById("result");
-const historyPanel = document.getElementById("historyPanel");
-const historyList = document.getElementById("historyList");
-const menu = document.getElementById("menu");
-
-/* Calculator State */
-let operation = [];
-let history = [];
-
-const OPERATORS = ["+", "-", "*", "/", "%"];
-
-/* Button Event Handling */
-document.querySelector(".buttons").addEventListener("click", e => {
-    const btn = e.target;
-
-    if (btn.dataset.num) addNumber(btn.dataset.num);
-    if (btn.dataset.op) addOperator(btn.dataset.op);
-    if (btn.dataset.action === "clear") clearAll();
-    if (btn.dataset.action === "delete") deleteLast();
-    if (btn.dataset.action === "equal") calculate();
-
-    updateDisplay();
-});
-
-/* Input Logic */
-function addNumber(num) {
-    if (num === ".") {
-        const lastNumber = getLastNumber();
-        if (lastNumber.includes(".")) return;
-    }
-    operation.push(num);
-}
-
-function addOperator(op) {
-    if (operation.length === 0) {
-        if (op === "-") operation.push(op); 
-        return;
-    }
-
-    const last = operation[operation.length - 1];
-    if (OPERATORS.includes(last) && last !== "%") {
-        operation[operation.length - 1] = op;
-    } else {
-        operation.push(op);
-    }
-}
-
-
-function clearAll() {
-    operation = [];
-    resultEl.textContent = "0";
-    updateDisplay();
-}
-
-function deleteLast() {
-    operation.pop();
-    updateDisplay();
-}
-
-/* Helper: Get the last number for decimal validation */
-function getLastNumber() {
-    let lastNumber = "";
-    for (let i = operation.length - 1; i >= 0; i--) {
-        if (OPERATORS.includes(operation[i])) break;
-        lastNumber = operation[i] + lastNumber;
-    }
-    return lastNumber;
-}
-
-/* Display Update */
-function updateDisplay() {
-    operationEl.textContent = operation.join("");
-}
-
-/* Calculation with PEMDAS */
-function calculate() {
-    if (operation.length === 0) return;
-
-    try {
-        const expression = operation.join(""); 
-        const sanitizedExpr = expression.replace(/(\d+)%/g, "($1/100)");
-        const result = eval(sanitizedExpr);      
-
-        history.unshift({
-            expression: operation.join(" "), 
-            result
-        });
-
-        renderHistory();
-        resultEl.textContent = result;
-        operation = [];
-    } catch {
-        resultEl.textContent = "Error";
-    }
-}
-
-/* History Rendering */
-function renderHistory() {
-    historyList.innerHTML = history
-        .map(item => `<li>${item.expression} = ${item.result}</li>`)
-        .join("");
-}
-
-/* UI Toggles */
-function toggleHistory() {
-    historyPanel.classList.toggle("active");
-}
-
-function toggleMenu() {
-    menu.classList.toggle("active");
-}
-
-/* Clear History */
-document.getElementById("clearHistoryBtn").addEventListener("click", () => {
-    history = [];
-    historyList.innerHTML = "";
-});
-
-</script>
+<!-- Scripts -->
+<script src="assets/js/menu.js"></script>
+<script src="assets/js/history.js"></script>
+<script src="assets/js/calculator.js"></script>
 
 </body>
 </html>
