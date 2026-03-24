@@ -11,17 +11,12 @@
 
     <style>
         .calculator {
-            width: 440px;
+            width: 420px;
         }
 
-        /* 
-            Layout: 5 columns
-            col 1-2: sci functions (2 wide)
-            col 3-5: numbers + operators (3 wide, standard layout)
-        */
         .buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-template-columns: repeat(5, 1fr);
             gap: 8px;
         }
 
@@ -30,7 +25,6 @@
             font-size: 1rem;
         }
 
-        /* Scientific function buttons — left 2 cols */
         .sci {
             background: #1e1e1e;
             color: var(--accent);
@@ -53,14 +47,6 @@
         #degRadBtn:hover {
             background: #2a2a2a;
             color: var(--text);
-        }
-
-        /* Divider line between sci and number sections */
-        .divider {
-            grid-column: span 5;
-            height: 1px;
-            background: #2a2a2a;
-            margin: 2px 0;
         }
     </style>
 </head>
@@ -99,57 +85,52 @@
 
         <div class="buttons">
 
-            <!--
-                5-column grid:
-                [sci] [sci] [num] [num] [op]
-            -->
-
-            <!-- Row 1 -->
+            <!-- Row 1: Scientific functions (top, full width) -->
             <button id="degRadBtn" class="sci">DEG</button>
+            <button class="sci" data-fn="sin">sin</button>
+            <button class="sci" data-fn="cos">cos</button>
+            <button class="sci" data-fn="tan">tan</button>
             <button class="sci" data-fn="pi">π</button>
-            <button class="clear" data-action="clear">C</button>
-            <button data-action="delete">⌫</button>
-            <button class="operator" data-op="%">%</button>
 
-            <!-- Row 2 -->
+            <!-- Row 2: Scientific functions -->
+            <button class="sci" data-fn="e">e</button>
             <button class="sci" data-fn="sq">x²</button>
             <button class="sci" onclick="addPowerOp()">xʸ</button>
+            <button class="sci" data-fn="sqrt">√</button>
+            <button class="sci" data-fn="inv">1/x</button>
+
+            <!-- Row 3: Scientific functions -->
+            <button class="sci" data-fn="log">log</button>
+            <button class="sci" data-fn="ln">ln</button>
+            <button class="sci" data-fn="fact">n!</button>
+            <button class="sci" data-fn="sign">±</button>
+            <button class="operator" data-op="%">%</button>
+
+            <!-- Row 4: 7 8 9 + operators (right) -->
             <button data-num="7">7</button>
             <button data-num="8">8</button>
             <button data-num="9">9</button>
+            <button class="operator" data-op="/">÷</button>
+            <button class="operator" data-op="*">×</button>
 
-            <!-- Row 3 -->
-            <button class="sci" data-fn="sqrt">√</button>
-            <button class="sci" data-fn="inv">1/x</button>
+            <!-- Row 5: 4 5 6 + operators (right) -->
             <button data-num="4">4</button>
             <button data-num="5">5</button>
             <button data-num="6">6</button>
+            <button class="operator" data-op="+">+</button>
+            <button class="operator" data-op="-">−</button>
 
-            <!-- Row 4 -->
-            <button class="sci" data-fn="log">log</button>
-            <button class="sci" data-fn="ln">ln</button>
+            <!-- Row 6: 1 2 3 + = (right) -->
             <button data-num="1">1</button>
             <button data-num="2">2</button>
             <button data-num="3">3</button>
+            <button class="equal" data-action="equal" style="grid-column: span 2;">=</button>
 
-            <!-- Row 5 -->
-            <button class="sci" data-fn="sin">sin</button>
-            <button class="sci" data-fn="cos">cos</button>
+            <!-- Row 7: C ⌫ 0 . -->
+            <button class="clear" data-action="clear">C</button>
+            <button data-action="delete">⌫</button>
             <button data-num="0" style="grid-column: span 2;">0</button>
             <button data-num=".">.</button>
-
-            <!-- Row 6 -->
-            <button class="sci" data-fn="tan">tan</button>
-            <button class="sci" data-fn="e">e</button>
-            <button class="operator" data-op="/">÷</button>
-            <button class="operator" data-op="*">×</button>
-            <button class="operator" data-op="-">−</button>
-
-            <!-- Row 7 -->
-            <button class="sci" data-fn="fact">n!</button>
-            <button class="sci" data-fn="sign">±</button>
-            <button class="operator" data-op="+">+</button>
-            <button class="equal" data-action="equal" style="grid-column: span 2;">=</button>
 
         </div>
     </main>
