@@ -29,3 +29,12 @@ body {
     justify-content: center;
     overflow: hidden;
 }
+
+/* ── Programmer page: taller layout scrolls instead of being clipped ── */
+body.programmer {
+    height: auto;
+    min-height: 100vh;
+    padding: 16px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}

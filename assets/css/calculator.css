@@ -106,3 +106,62 @@ button:active {
     color: red;
     font-weight: bold;
 }
+
+/* =============================================
+   Programmer mode — LAYOUT  (page: <body class="programmer">)
+   ============================================= */
+
+.programmer .calculator { width: min(420px, calc(100vw - 16px)); }
+.programmer .display    { margin-bottom: 12px; }
+.programmer .result     { white-space: normal; overflow-wrap: anywhere; line-height: 1.2; min-height: 2.64rem; }
+
+/* 1. Base readouts: label | value | copy */
+.readouts      { display: grid; gap: 4px; margin-bottom: 12px; }
+.readout       { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) 4.5rem; align-items: center; gap: 8px; }
+.readout-label { font-size: 0.78rem; }
+.readout-value { text-align: right; font-size: 0.85rem; line-height: 1.3; overflow-wrap: anywhere; }
+.copy-btn      { height: 26px; padding: 0; font-size: 0.72rem; border-radius: 8px; }
+
+/* 2. Mode bar: base (full row) / bit width + sign (half each) */
+.mode-bar   { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.mode-group { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
+.mode-base  { grid-column: 1 / -1; }
+.mode-bar .base-btn { height: 34px; padding: 0 4px; font-size: 0.78rem; }
+
+/* 3. Bit grid: nibbles of 4 bits, 4 nibbles per row (2 on small screens) */
+.bit-grid  { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 12px; }
+.nibble    { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; flex: 0 0 calc((100% - 24px) / 4); }
+.bit-cell  { display: flex; flex-direction: column; align-items: center; }
+.bit-cell small { font-size: 0.6rem; line-height: 1.3; }
+.bit       { width: 100%; height: 24px; padding: 0; font-size: 0.78rem; border-radius: 6px; }
+
+/* 4. Keypad: 5 equal columns → [bitwise 1] [digits 3] [operators 1] */
+.keypad { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(6, 46px); gap: 8px; }
+.zone   { grid-row: 1 / -1; display: grid; grid-template-rows: subgrid; }
+.zone-bitwise { grid-column: 1; }
+.zone-digits  { grid-column: 2 / 5; grid-template-columns: subgrid; }
+.zone-ops     { grid-column: 5; }
+.zone-ops .equal { grid-row: span 2; }
+.keypad button   { height: 100%; padding: 0; font-size: 0.95rem; }
+.zone-bitwise button { font-size: 0.78rem; }
+
+@media (max-width: 480px) {
+    .nibble { flex-basis: calc((100% - 8px) / 2); }
+    .keypad { gap: 6px; grid-template-rows: repeat(6, 42px); }
+}
+
+/* =============================================
+   Programmer mode — VISUAL (unchanged from previous version)
+   ============================================= */
+
+.readout-label, .readout-value { color: var(--muted); font-family: monospace; }
+.readout.active-base .readout-value { color: var(--accent); }
+
+.base-btn { border: 2px solid transparent; border-radius: 10px; background: #1e1e1e; color: var(--muted); font-weight: bold; }
+.base-btn:hover  { background: #2a2a2a; color: var(--text); }
+.base-btn.active { border-color: var(--accent); color: var(--accent); background: #1a2e25; }
+
+.bitwise { background: #1e1e1e; color: #7eb8f7; font-weight: bold; }
+.hex-btn { background: #1e1e1e; font-weight: bold; }
+.bitwise:hover, .hex-btn:hover { background: #2a2a2a; }
+.programmer button:disabled { opacity: 0.25; cursor: not-allowed; }

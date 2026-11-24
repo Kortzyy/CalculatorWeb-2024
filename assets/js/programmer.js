@@ -1,162 +1,183 @@
 /* =============================================
    programmer.js — Programmer Calculator Logic
+   BigInt-based: 8/16/32/64-bit, signed/unsigned
    ============================================= */
 
-const resultEl   = document.getElementById("result");
-const operationEl = document.getElementById("operation");
+const $ = (sel) => document.querySelector(sel);
+const resultEl    = $("#result");
+const operationEl = $("#operation");
+const bitGrid     = $("#bitGrid");
 
-const hexDisplay = document.getElementById("hexDisplay");
-const decDisplay = document.getElementById("decDisplay");
-const octDisplay = document.getElementById("octDisplay");
-const binDisplay = document.getElementById("binDisplay");
+const RADIX  = { HEX: 16, DEC: 10, OCT: 8, BIN: 2 };
+const PREFIX = { HEX: "0x", DEC: "", OCT: "0o", BIN: "0b" };
+const SYMBOL = { "&": "AND", "|": "OR", "^": "XOR", "<<": "<<", ">>": ">>", "*": "×", "/": "÷", "+": "+", "-": "−" };
 
-/* Current base: 'HEX' | 'DEC' | 'OCT' | 'BIN' */
-let currentBase = "DEC";
-
-/* Raw expression tokens */
-let operation = [];
-
-/* All valid operators */
-const OPERATORS = ["+", "-", "*", "/", "&", "|", "^", "<<", ">>"];
-
-/* ── Base Switch ── */
-document.querySelectorAll(".base-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        document.querySelectorAll(".base-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentBase = btn.dataset.base;
-        updateButtonStates();
-        updateBaseDisplays();
-    });
-});
-
-/* Disable buttons that aren't valid for the current base */
-function updateButtonStates() {
-    document.querySelectorAll(".hex-btn").forEach(btn => {
-        btn.disabled = currentBase === "OCT" || currentBase === "BIN" || currentBase === "DEC";
-    });
-    document.querySelectorAll("[data-num]").forEach(btn => {
-        const num = parseInt(btn.dataset.num, 10);
-        if (isNaN(num)) return;
-        if (currentBase === "BIN") btn.disabled = num > 1;
-        else if (currentBase === "OCT") btn.disabled = num > 7;
-        else btn.disabled = false;
-    });
-}
-
-/* ── Button Events ── */
-document.querySelector(".buttons").addEventListener("click", e => {
-    const btn = e.target.closest("button");
-    if (!btn || btn.disabled) return;
-
-    const num    = btn.dataset.num;
-    const op     = btn.dataset.op;
-    const action = btn.dataset.action;
-
-    if (num    !== undefined) addNumber(num);
-    if (op     !== undefined) addOperator(op);
-    if (action === "clear")   clearAll();
-    if (action === "delete")  deleteLast();
-    if (action === "equal")   calculate();
-    if (action === "not")     applyNOT();
-
-    updateDisplay();
-    updateBaseDisplays();
-});
-
-/* ── Input ── */
-function addNumber(num) {
-    operation.push(num);
-}
-
-function addOperator(op) {
-    if (operation.length === 0) return;
-    const last = operation[operation.length - 1];
-    if (OPERATORS.includes(last)) {
-        operation[operation.length - 1] = op;
-    } else {
-        operation.push(op);
-    }
-}
-
-function clearAll() {
-    operation = [];
-    resultEl.textContent = "0";
-}
-
-function deleteLast() {
-    operation.pop();
-}
-
-function applyNOT() {
-    const val = getCurrentValue();
-    if (val === null) return;
-    const result = ~val >>> 0; // 32-bit NOT
-    operation = [result.toString(getBaseRadix())];
-    resultEl.textContent = operation.join("").toUpperCase();
-}
-
-/* ── Calculate ── */
-function calculate() {
-    if (operation.length === 0) return;
-
-    try {
-        // Convert expression tokens to decimal for eval
-        const expr = operation.map(token => {
-            if (OPERATORS.includes(token)) return token;
-            return parseInt(token, getBaseRadix()).toString(10);
-        }).join(" ");
-
-        // eslint-disable-next-line no-eval
-        let result = eval(expr);
-        result = Math.trunc(result); // integers only
-
-        if (!isFinite(result)) throw new Error("Math Error");
-
-        const formatted = result.toString(getBaseRadix()).toUpperCase();
-        addToHistory(operation.join(" ") + " =", formatted);
-
-        resultEl.textContent = formatted;
-        operation = [result.toString(getBaseRadix())];
-    } catch {
-        resultEl.textContent = "Error";
-        operation = [];
-    }
-}
+let base = "DEC", width = 32, signed = true;
+let tokens = [];      // e.g. ["FF", "+", "1"] — numbers are whole strings
+let lastValue = 0n;   // result of the last "="
+let hasError = false;
 
 /* ── Helpers ── */
-function getBaseRadix() {
-    return { HEX: 16, DEC: 10, OCT: 8, BIN: 2 }[currentBase];
+const isOp  = (t) => Object.hasOwn(SYMBOL, t);
+const show  = (t) => (isOp(t) ? SYMBOL[t] : t.toUpperCase());
+const wrap  = (v) => (signed ? BigInt.asIntN(width, v) : BigInt.asUintN(width, v));
+const parse = (s, b = base) => BigInt(PREFIX[b] + s);
+const fmt   = (v, b = base) => (b === "DEC" ? v : BigInt.asUintN(width, v)).toString(RADIX[b]).toUpperCase();
+const group = (s) => s.replace(/\B(?=(.{4})+$)/g, " ");
+
+const lastIsNum = () => tokens.length > 0 && !isOp(tokens.at(-1));
+const current = () => {
+    const nums = tokens.filter((t) => !isOp(t));
+    return nums.length ? wrap(parse(nums.at(-1))) : lastValue;
+};
+
+/* ── Input ── */
+function addDigit(d) {
+    if (lastIsNum()) tokens[tokens.length - 1] += d;
+    else tokens.push(d);
 }
 
-function getCurrentValue() {
-    const expr = operation.join("");
-    if (!expr) return 0;
-    const val = parseInt(expr, getBaseRadix());
-    return isNaN(val) ? null : val;
+function addOp(op) {
+    if (!tokens.length) tokens.push(fmt(lastValue));
+    if (isOp(tokens.at(-1))) tokens[tokens.length - 1] = op;
+    else tokens.push(op);
 }
 
-/* ── Display ── */
-function updateDisplay() {
-    operationEl.textContent = operation.join(" ").toUpperCase();
+function backspace() {
+    if (!tokens.length) return;
+    const last = tokens.at(-1);
+    const next = last.slice(0, -1);
+    if (isOp(last) || next === "" || next === "-") tokens.pop();
+    else tokens[tokens.length - 1] = next;
+}
 
-    const joined = operation.join("").toUpperCase();
-    resultEl.textContent = joined || "0";
+function setValue(v) {
+    if (lastIsNum()) tokens[tokens.length - 1] = fmt(v);
+    else tokens.push(fmt(v));
+}
+
+function calculate() {
+    if (!tokens.length) return;
+    if (isOp(tokens.at(-1))) tokens.pop();
+    try {
+        const expr = tokens.map((t) => (isOp(t) ? t : wrap(parse(t)) + "n")).join(" ");
+        const out = wrap(eval(expr));
+        addToHistory(`${tokens.map(show).join(" ")} (${base})`, fmt(out));
+        lastValue = out;
+    } catch {
+        hasError = true;
+        lastValue = 0n;
+    }
+    tokens = [];
+}
+
+/* ── Bit grid ── */
+function buildBits() {
+    let html = "";
+    for (let n = width / 4 - 1; n >= 0; n--) {
+        html += '<div class="nibble">';
+        for (let i = n * 4 + 3; i >= n * 4; i--) {
+            html += `<div class="bit-cell"><small>${i}</small><button class="bit" data-bit="${i}" aria-pressed="false">0</button></div>`;
+        }
+        html += "</div>";
+    }
+    bitGrid.innerHTML = html;
+    bitGrid.dataset.width = width;
+}
+
+function renderBits(v) {
+    if (bitGrid.dataset.width !== String(width)) buildBits();
+    const u = BigInt.asUintN(width, v);
+    bitGrid.querySelectorAll(".bit").forEach((b) => {
+        const on = (u >> BigInt(b.dataset.bit)) & 1n;
+        b.textContent = on;
+        b.setAttribute("aria-pressed", on === 1n);
+    });
+}
+
+/* ── Render ── */
+function render() {
+    const v = current();
+
+    operationEl.textContent = tokens.map(show).join(" ");
+    resultEl.textContent = hasError ? "Error" : lastIsNum() ? tokens.at(-1).toUpperCase() : fmt(v);
 
     const len = resultEl.textContent.length;
-    resultEl.style.fontSize = len > 16 ? "1rem" : len > 12 ? "1.4rem" : len > 9 ? "1.8rem" : "2.2rem";
+    resultEl.style.fontSize = len > 32 ? "1rem" : len > 16 ? "1.4rem" : len > 10 ? "1.8rem" : "2.2rem";
+
+    for (const b in RADIX) {
+        const s = fmt(v, b);
+        $(`#${b.toLowerCase()}Display`).textContent = b === "HEX" || b === "BIN" ? group(s) : s;
+    }
+    document.querySelectorAll(".readout").forEach((r) => r.classList.toggle("active-base", r.dataset.base === base));
+
+    renderBits(v);
+    document.querySelectorAll(".keypad [data-num]").forEach((b) => {
+        b.disabled = parseInt(b.dataset.num, 16) >= RADIX[base];
+    });
 }
 
-function updateBaseDisplays() {
-    const val = getCurrentValue();
-    const n = val ?? 0;
+/* ── Events ── */
+$(".keypad").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn || btn.disabled) return;
+    hasError = false;
 
-    hexDisplay.textContent = "HEX  " + (n >>> 0).toString(16).toUpperCase();
-    decDisplay.textContent = "DEC  " + n.toString(10);
-    octDisplay.textContent = "OCT  " + (n >>> 0).toString(8);
-    binDisplay.textContent = "BIN  " + (n >>> 0).toString(2);
-}
+    const { num, op, action } = btn.dataset;
+    if (num !== undefined)          addDigit(num);
+    else if (op !== undefined)      addOp(op);
+    else if (action === "clear")    { tokens = []; lastValue = 0n; }
+    else if (action === "delete")   backspace();
+    else if (action === "not")      setValue(wrap(~current()));
+    else if (action === "equal")    calculate();
 
-/* Init */
-updateButtonStates();
-updateBaseDisplays();
+    render();
+});
+
+$(".mode-bar").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+
+    const prev = base;
+    const { base: b, width: w, sign } = btn.dataset;
+    if (b)    base = b;
+    if (w)    width = Number(w);
+    if (sign) signed = sign === "signed";
+
+    btn.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === btn));
+
+    lastValue = wrap(lastValue);
+    tokens = tokens.map((t) => (isOp(t) ? t : fmt(wrap(parse(t, prev)))));
+    render();
+});
+
+bitGrid.addEventListener("click", (e) => {
+    const btn = e.target.closest(".bit");
+    if (!btn) return;
+    hasError = false;
+    setValue(wrap(current() ^ (1n << BigInt(btn.dataset.bit))));
+    render();
+});
+
+$(".readouts").addEventListener("click", async (e) => {
+    const btn = e.target.closest(".copy-btn");
+    if (!btn) return;
+    const text = $(`#${btn.dataset.copy}`).textContent.replace(/\s/g, "");
+    try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = "Copied";
+    } catch {
+        btn.textContent = "Failed";
+    }
+    setTimeout(() => (btn.textContent = "Copy"), 1000);
+});
+
+/* Small screens: history is an overlay, so close it when tapping outside */
+document.addEventListener("click", (e) => {
+    if (!matchMedia("(max-width: 1100px)").matches) return;
+    if (!historyPanel.contains(e.target) && !e.target.closest(".history-toggle")) {
+        historyPanel.classList.remove("active");
+    }
+});
+
+render();
