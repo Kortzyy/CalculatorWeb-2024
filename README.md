@@ -39,7 +39,7 @@ calculator/
 
 No build tools required. Just open `index.html` in your browser, or use the **VS Code Live Server** extension.
 
-## 🗺️ Planned Pages
+## Planned Pages
 
 | Page | Status |
 |---|---|
