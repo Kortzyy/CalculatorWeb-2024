@@ -66,67 +66,65 @@
             </div>
         </section>
 
-        <!-- 2. Mode & bit controls -->
+        <!-- 2. Mode bar -->
         <section class="mode-bar">
-            <div class="mode-group mode-base" role="group" aria-label="Number base">
+            <div class="mode-group" role="group" aria-label="Number base">
                 <button class="base-btn" data-base="HEX">HEX</button>
                 <button class="base-btn active" data-base="DEC">DEC</button>
                 <button class="base-btn" data-base="OCT">OCT</button>
                 <button class="base-btn" data-base="BIN">BIN</button>
             </div>
             <div class="mode-group" role="group" aria-label="Bit width">
-                <button class="base-btn" data-width="8">8</button>
-                <button class="base-btn" data-width="16">16</button>
-                <button class="base-btn active" data-width="32">32</button>
-                <button class="base-btn" data-width="64">64</button>
-            </div>
-            <div class="mode-group" role="group" aria-label="Signed or unsigned">
-                <button class="base-btn active" data-sign="signed">Signed</button>
-                <button class="base-btn" data-sign="unsigned">Unsigned</button>
+                <button class="base-btn" data-width="8">8-bit</button>
+                <button class="base-btn" data-width="16">16-bit</button>
+                <button class="base-btn active" data-width="32">32-bit</button>
+                <button class="base-btn" data-width="64">64-bit</button>
             </div>
         </section>
 
-        <!-- 3. Bit grid (built by programmer.js) -->
-        <section class="bit-grid" id="bitGrid" aria-label="Bit grid"></section>
-
-        <!-- 4. Keypad: bitwise | digits | arithmetic -->
+        <!-- 3. Keypad: control row, then bitwise | digits | arithmetic -->
         <section class="keypad">
-            <div class="zone zone-bitwise">
-                <button class="bitwise" data-op="&amp;">AND</button>
-                <button class="bitwise" data-op="|">OR</button>
-                <button class="bitwise" data-op="^">XOR</button>
-                <button class="bitwise" data-action="not">NOT</button>
-                <button class="bitwise" data-op="&lt;&lt;">&lt;&lt;</button>
-                <button class="bitwise" data-op="&gt;&gt;">&gt;&gt;</button>
-            </div>
-
-            <div class="zone zone-digits">
-                <button class="hex-btn" data-num="D">D</button>
-                <button class="hex-btn" data-num="E">E</button>
-                <button class="hex-btn" data-num="F">F</button>
-                <button class="hex-btn" data-num="A">A</button>
-                <button class="hex-btn" data-num="B">B</button>
-                <button class="hex-btn" data-num="C">C</button>
-                <button data-num="7">7</button>
-                <button data-num="8">8</button>
-                <button data-num="9">9</button>
-                <button data-num="4">4</button>
-                <button data-num="5">5</button>
-                <button data-num="6">6</button>
-                <button data-num="1">1</button>
-                <button data-num="2">2</button>
-                <button data-num="3">3</button>
+            <div class="keypad-top">
                 <button class="clear" data-action="clear">AC</button>
-                <button data-num="0">0</button>
                 <button data-action="delete">⌫</button>
             </div>
 
-            <div class="zone zone-ops">
-                <button class="operator" data-op="/">÷</button>
-                <button class="operator" data-op="*">×</button>
-                <button class="operator" data-op="-">−</button>
-                <button class="operator" data-op="+">+</button>
-                <button class="equal" data-action="equal">=</button>
+            <div class="keypad-main">
+                <div class="zone zone-bitwise">
+                    <button class="bitwise" data-op="&amp;">AND</button>
+                    <button class="bitwise" data-op="|">OR</button>
+                    <button class="bitwise" data-op="^">XOR</button>
+                    <button class="bitwise" data-action="not">NOT</button>
+                    <button class="bitwise" data-op="&lt;&lt;">&lt;&lt;</button>
+                    <button class="bitwise" data-op="&gt;&gt;">&gt;&gt;</button>
+                </div>
+
+                <div class="zone zone-digits">
+                    <button class="hex-btn" data-num="D">D</button>
+                    <button class="hex-btn" data-num="E">E</button>
+                    <button class="hex-btn" data-num="F">F</button>
+                    <button class="hex-btn" data-num="A">A</button>
+                    <button class="hex-btn" data-num="B">B</button>
+                    <button class="hex-btn" data-num="C">C</button>
+                    <button data-num="7">7</button>
+                    <button data-num="8">8</button>
+                    <button data-num="9">9</button>
+                    <button data-num="4">4</button>
+                    <button data-num="5">5</button>
+                    <button data-num="6">6</button>
+                    <button data-num="1">1</button>
+                    <button data-num="2">2</button>
+                    <button data-num="3">3</button>
+                    <button data-num="0">0</button>
+                </div>
+
+                <div class="zone zone-ops">
+                    <button class="operator" data-op="/">÷</button>
+                    <button class="operator" data-op="*">×</button>
+                    <button class="operator" data-op="-">−</button>
+                    <button class="operator" data-op="+">+</button>
+                    <button class="equal" data-action="equal">=</button>
+                </div>
             </div>
         </section>
 

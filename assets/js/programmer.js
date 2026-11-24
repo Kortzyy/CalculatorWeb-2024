@@ -1,18 +1,18 @@
 /* =============================================
    programmer.js — Programmer Calculator Logic
-   BigInt-based: 8/16/32/64-bit, signed/unsigned
+   BigInt-based: 8/16/32/64-bit (signed)
    ============================================= */
 
 const $ = (sel) => document.querySelector(sel);
 const resultEl    = $("#result");
 const operationEl = $("#operation");
-const bitGrid     = $("#bitGrid");
 
 const RADIX  = { HEX: 16, DEC: 10, OCT: 8, BIN: 2 };
 const PREFIX = { HEX: "0x", DEC: "", OCT: "0o", BIN: "0b" };
 const SYMBOL = { "&": "AND", "|": "OR", "^": "XOR", "<<": "<<", ">>": ">>", "*": "×", "/": "÷", "+": "+", "-": "−" };
 
-let base = "DEC", width = 32, signed = true;
+let base = "DEC", width = 32;
+const signed = true;   // always signed (two's complement)
 let tokens = [];      // e.g. ["FF", "+", "1"] — numbers are whole strings
 let lastValue = 0n;   // result of the last "="
 let hasError = false;
@@ -71,30 +71,6 @@ function calculate() {
     tokens = [];
 }
 
-/* ── Bit grid ── */
-function buildBits() {
-    let html = "";
-    for (let n = width / 4 - 1; n >= 0; n--) {
-        html += '<div class="nibble">';
-        for (let i = n * 4 + 3; i >= n * 4; i--) {
-            html += `<div class="bit-cell"><small>${i}</small><button class="bit" data-bit="${i}" aria-pressed="false">0</button></div>`;
-        }
-        html += "</div>";
-    }
-    bitGrid.innerHTML = html;
-    bitGrid.dataset.width = width;
-}
-
-function renderBits(v) {
-    if (bitGrid.dataset.width !== String(width)) buildBits();
-    const u = BigInt.asUintN(width, v);
-    bitGrid.querySelectorAll(".bit").forEach((b) => {
-        const on = (u >> BigInt(b.dataset.bit)) & 1n;
-        b.textContent = on;
-        b.setAttribute("aria-pressed", on === 1n);
-    });
-}
-
 /* ── Render ── */
 function render() {
     const v = current();
@@ -111,7 +87,6 @@ function render() {
     }
     document.querySelectorAll(".readout").forEach((r) => r.classList.toggle("active-base", r.dataset.base === base));
 
-    renderBits(v);
     document.querySelectorAll(".keypad [data-num]").forEach((b) => {
         b.disabled = parseInt(b.dataset.num, 16) >= RADIX[base];
     });
@@ -139,23 +114,14 @@ $(".mode-bar").addEventListener("click", (e) => {
     if (!btn) return;
 
     const prev = base;
-    const { base: b, width: w, sign } = btn.dataset;
-    if (b)    base = b;
-    if (w)    width = Number(w);
-    if (sign) signed = sign === "signed";
+    const { base: b, width: w } = btn.dataset;
+    if (b) base = b;
+    if (w) width = Number(w);
 
     btn.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === btn));
 
     lastValue = wrap(lastValue);
     tokens = tokens.map((t) => (isOp(t) ? t : fmt(wrap(parse(t, prev)))));
-    render();
-});
-
-bitGrid.addEventListener("click", (e) => {
-    const btn = e.target.closest(".bit");
-    if (!btn) return;
-    hasError = false;
-    setValue(wrap(current() ^ (1n << BigInt(btn.dataset.bit))));
     render();
 });
 
