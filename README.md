@@ -1,8 +1,8 @@
-# 🧮 Calculator
+# Calculator
 
 A multi-mode calculator web app built with plain HTML, CSS, and JavaScript. No frameworks, no dependencies — just clean, structured code.
 
-## ✨ Features
+## Features
 
 - **Standard** calculator with full arithmetic and percentage support
 - **History panel** — tracks recent calculations per session
@@ -10,7 +10,7 @@ A multi-mode calculator web app built with plain HTML, CSS, and JavaScript. No f
 - **Keyboard support** — type numbers and operators directly
 - Responsive and accessible (ARIA labels throughout)
 
-## 📁 File Structure
+## File Structure
 
 ```
 calculator/
@@ -35,7 +35,7 @@ calculator/
 │       └── calculator.js   # Core calculator logic + keyboard support
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 No build tools required. Just open `index.html` in your browser, or use the **VS Code Live Server** extension.
 
@@ -52,7 +52,7 @@ No build tools required. Just open `index.html` in your browser, or use the **VS
 | Speed | 🔧 In progress |
 | Time | 🔧 In progress |
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - HTML5
 - CSS3 (custom properties, grid, transitions)
