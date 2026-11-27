@@ -161,3 +161,29 @@ button:active {
 .hex-btn { background: #1e1e1e; font-weight: bold; }
 .bitwise:hover, .hex-btn:hover { background: #2a2a2a; }
 .programmer button:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* =============================================
+   Scientific mode — LAYOUT  (page: <body class="scientific">)
+   ============================================= */
+
+.scientific .calculator { width: 420px; }
+
+/* Keypad: function block on top, number block below */
+.scientific .buttons { grid-template-columns: 1fr; gap: 12px; }
+.sci-block, .num-block { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+
+.sci-block button { height: 38px; padding: 0; font-size: 0.82rem; }
+.num-block button { height: 48px; padding: 0; font-size: 1.1rem; }
+
+/* Number block: [7 8 9 ⌫ C] [4 5 6 ÷ ×] [1 2 3 + −] [0 0 . = =] */
+.num-block [data-num="0"] { grid-column: span 2; }
+.num-block .equal         { grid-column: span 2; }
+
+/* =============================================
+   Scientific mode — VISUAL (unchanged from previous version)
+   ============================================= */
+
+.sci        { background: #1e1e1e; color: var(--accent); font-weight: bold; }
+.sci:hover  { background: #2a2a2a; }
+#degRadBtn       { background: #1e1e1e; color: var(--muted); font-size: 0.78rem; font-weight: bold; letter-spacing: 0.04em; }
+#degRadBtn:hover { background: #2a2a2a; color: var(--text); }
