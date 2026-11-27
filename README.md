@@ -45,7 +45,7 @@ No build tools required. Just open `index.html` in your browser, or use the **VS
 |---|---|
 | Standard | ✅ Done |
 | Scientific | ✅ Done |
-| Programmer | 🔧 Not yet finished |
+| Programmer | ✅ Done |
 | Currency | 🔧 In progress |
 | Temperature | 🔧 In progress |
 | BMI | 🔧 In progress |
