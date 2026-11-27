@@ -44,7 +44,7 @@ No build tools required. Just open `index.html` in your browser, or use the **VS
 | Page | Status |
 |---|---|
 | Standard | ✅ Done |
-| Scientific | 🔧 So close |
+| Scientific | ✅ Done |
 | Programmer | 🔧 Not yet finished |
 | Currency | 🔧 In progress |
 | Temperature | 🔧 In progress |
