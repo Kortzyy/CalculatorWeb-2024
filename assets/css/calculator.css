@@ -175,7 +175,7 @@ button:active {
 .sci-block button { height: 38px; padding: 0; font-size: 0.82rem; }
 .num-block button { height: 48px; padding: 0; font-size: 1.1rem; }
 
-/* Number block: [7 8 9 ⌫ C] [4 5 6 ÷ ×] [1 2 3 + −] [0 0 . = =] */
+/* Number block: 5 columns — 0 and = are each 2 columns wide */
 .num-block [data-num="0"] { grid-column: span 2; }
 .num-block .equal         { grid-column: span 2; }
 
