@@ -127,18 +127,16 @@ button:active {
 .mode-group { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
 .mode-bar .base-btn { height: 34px; padding: 0 4px; font-size: 0.78rem; }
 
-/* 3. Keypad: control row on top, then [bitwise | digits | operators] */
+/* 3. Keypad: control row on top, then [bitwise | digits] */
 .keypad     { display: grid; gap: 8px; }
 .keypad-top { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .keypad-top button { height: 40px; font-size: 0.95rem; }
 
-.keypad-main  { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(6, 46px); gap: 8px; }
+.keypad-main  { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(6, 46px); gap: 8px; }
 .zone         { grid-row: 1 / -1; display: grid; grid-template-rows: subgrid; }
 .zone-bitwise { grid-column: 1; }
 .zone-digits  { grid-column: 2 / 5; grid-template-columns: subgrid; }
-.zone-ops     { grid-column: 5; }
 .zone-digits [data-num="0"] { grid-column: 1 / -1; }
-.zone-ops .equal { grid-row: span 2; }
 .keypad-main button  { height: 100%; padding: 0; font-size: 0.95rem; }
 .zone-bitwise button { font-size: 0.78rem; }
 
